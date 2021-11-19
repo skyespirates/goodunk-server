@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/product");
+const authRoutes = require("./routes/auth");
 
 mongoose
   .connect("mongodb://localhost:27017/relationship")
@@ -17,6 +18,7 @@ mongoose
 app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("hello world");

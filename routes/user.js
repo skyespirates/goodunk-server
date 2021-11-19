@@ -4,6 +4,7 @@ const {
   getUsers,
   getUser,
   createProduct,
+  deleteUsers,
 } = require("../controllers/user");
 
 // Create User
@@ -17,4 +18,8 @@ router.get("/:id", getUser);
 
 // Create A Product
 router.post("/:id", createProduct);
+
+// Delete All Users
+router.delete("/", deleteUsers);
+
 module.exports = router;

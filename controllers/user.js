@@ -11,6 +11,16 @@ const createUser = async (req, res) => {
   }
 };
 
+// Delete All Users
+const deleteUsers = async (req, res) => {
+  try {
+    await User.deleteMany();
+    res.status(200).json("All users deleted successfully!");
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 // Get All Users
 const getUsers = async (req, res) => {
   try {
@@ -44,4 +54,4 @@ const createProduct = async (req, res) => {
     res.status(500).json(error.message);
   }
 };
-module.exports = { createUser, getUsers, getUser, createProduct };
+module.exports = { createUser, getUsers, getUser, createProduct, deleteUsers };
