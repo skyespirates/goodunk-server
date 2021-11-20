@@ -6,6 +6,7 @@ const {
   getProduct,
   updateProduct,
 } = require("../controllers/product");
+const { verifyTokenAndAuthorization } = require("./middleware");
 
 // Create Product
 router.post("/", createProduct);
@@ -17,7 +18,7 @@ router.delete("/", deleteProducts);
 router.get("/", getProducts);
 
 // Get An Products
-router.get("/:id", getProduct);
+router.get("/:id", verifyTokenAndAuthorization, getProduct);
 
 // Update Product
 router.put("/:id", updateProduct);

@@ -1,14 +1,11 @@
 const router = require("express").Router();
 const {
-  createUser,
   getUsers,
   getUser,
   createProduct,
   deleteUsers,
 } = require("../controllers/user");
-
-// Create User
-router.post("/", createUser);
+const { verifyTokenAndAuthorization } = require("./middleware");
 
 // Get All Users
 router.get("/", getUsers);
@@ -17,7 +14,7 @@ router.get("/", getUsers);
 router.get("/:id", getUser);
 
 // Create A Product
-router.post("/:id", createProduct);
+router.post("/:id", verifyTokenAndAuthorization, createProduct);
 
 // Delete All Users
 router.delete("/", deleteUsers);

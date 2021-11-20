@@ -1,7 +1,10 @@
 const User = require("../models/User");
 const Product = require("../models/Product");
-// Create User
-const createUser = async (req, res) => {
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+// Register
+const register = async (req, res) => {
   try {
     const user = new User(req.body);
     await user.save();
@@ -11,6 +14,40 @@ const createUser = async (req, res) => {
   }
 };
 
+// Login
+const login = async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username }).populate("products");
+    if (!user) {
+      return res.status(401).json("Invalid credentials");
+    } else {
+      bcrypt.compare(password, user.password, function (error, isMatch) {
+        if (error) {
+          res.status(401).json(error.message);
+          console.log(error.message);
+        } else {
+          if (isMatch) {
+            const accessToken = jwt.sign(
+              {
+                id: user._id,
+              },
+              process.env.JWT_SECRET,
+              { expiresIn: "1d" }
+            );
+            const { password, ...others } = user._doc;
+
+            res.status(200).json({ ...others, token: accessToken });
+          } else {
+            res.status(500).json("Password not match!");
+          }
+        }
+      });
+    }
+  } catch (error) {
+    res.status(401).json(error.message);
+  }
+};
 // Delete All Users
 const deleteUsers = async (req, res) => {
   try {
@@ -54,4 +91,11 @@ const createProduct = async (req, res) => {
     res.status(500).json(error.message);
   }
 };
-module.exports = { createUser, getUsers, getUser, createProduct, deleteUsers };
+module.exports = {
+  register,
+  login,
+  getUsers,
+  getUser,
+  createProduct,
+  deleteUsers,
+};
