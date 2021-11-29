@@ -48,6 +48,7 @@ const login = async (req, res) => {
     res.status(401).json(error.message);
   }
 };
+
 // Delete All Users
 const deleteUsers = async (req, res) => {
   try {
@@ -58,10 +59,20 @@ const deleteUsers = async (req, res) => {
   }
 };
 
+// Delete A User
+const deleteUser = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json("Delete a user and associated products");
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 // Get All Users
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find().populate("products");
+    const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json(error.message);
@@ -71,7 +82,7 @@ const getUsers = async (req, res) => {
 // Get An User
 const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).populate("products");
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json(error.message);
@@ -83,19 +94,39 @@ const createProduct = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     const product = new Product(req.body);
-    await product.save();
     user.products.push(product);
+    await product.save();
     await user.save();
-    res.status(200).json(user);
+    res.status(200).json(product);
   } catch (error) {
     res.status(500).json(error.message);
   }
 };
+
+const deleteProduct = async (req, res) => {
+  const { id, pid } = req.params;
+  try {
+    const result = await User.findByIdAndUpdate(
+      id,
+      {
+        $pull: { products: pid },
+      },
+      { new: true }
+    );
+    await Product.findByIdAndDelete(pid);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 module.exports = {
   register,
   login,
   getUsers,
   getUser,
   createProduct,
+  deleteProduct,
   deleteUsers,
+  deleteUser,
 };

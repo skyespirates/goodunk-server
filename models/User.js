@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 const bcrypt = require("bcryptjs");
+const Product = require("./Product");
 
 const UserSchema = new Schema({
   username: String,
@@ -27,6 +28,12 @@ UserSchema.pre("save", function (next) {
     });
   } else {
     return next();
+  }
+});
+UserSchema.post("findOneAndDelete", async function (user) {
+  if (user.products.length) {
+    const res = await Product.deleteMany({ _id: { $in: user.products } });
+    console.log(res);
   }
 });
 module.exports = model("User", UserSchema);

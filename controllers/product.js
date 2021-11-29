@@ -20,6 +20,16 @@ const deleteProducts = async (req, res) => {
   }
 };
 
+// Delete A Product
+const deleteProduct = async (req, res) => {
+  try {
+    await Product.findByIdAndDelete(req.params.id);
+    res.status(200).json("Deleted a product");
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 // Get All Products
 const getProducts = async (req, res) => {
   try {
@@ -55,6 +65,7 @@ const updateProduct = async (req, res) => {
 module.exports = {
   createProduct,
   deleteProducts,
+  deleteProduct,
   getProducts,
   getProduct,
   updateProduct,
