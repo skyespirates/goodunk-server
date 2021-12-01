@@ -11,7 +11,7 @@ const productRoutes = require("./routes/product");
 const authRoutes = require("./routes/auth");
 
 mongoose
-  .connect("mongodb://localhost:27017/relationship")
+  .connect(process.env.DB_URI || "mongodb://localhost:27017/relationship")
   .then(() => {
     console.log("Connected to DB");
   })
